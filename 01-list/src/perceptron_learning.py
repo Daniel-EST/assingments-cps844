@@ -10,10 +10,11 @@ class TargetFunction():
     """
     Class representing the target function that separates the data points into two classes.
     """
+
     def __init__(self, p: Tuple[float], q: Tuple[float]):
         """
         Initializes the TargetFunction with two points p and q.
-        
+
         Args:
         - p: A tuple representing a point in 2D space.
         - q: A tuple representing a point in 2D space.
@@ -23,11 +24,11 @@ class TargetFunction():
     def initialize(self, p: Tuple[float], q: Tuple[float]) -> Tuple[float]:
         """
         Calculates the slope and the y-intercept of the line connecting points p and q.
-        
+
         Args:
         - p: A tuple representing a point in 2D space.
         - q: A tuple representing a point in 2D space.
-        
+
         Returns:
         - A tuple representing the slope and y-intercept of the line connecting points p and q.
         """
@@ -38,10 +39,10 @@ class TargetFunction():
     def classify(self, point: Tuple[float]) -> float:
         """
         Classifies a point based on its location relative to the target function.
-        
+
         Args:
         - point: A tuple representing a point in 2D space.
-        
+
         Returns:
         - 1 if the point is above the target function, -1 otherwise.
         """
@@ -68,6 +69,7 @@ class Perceptron():
     """
     Class representing a Perceptron model.
     """
+
     def __init__(self):
         """
         Initializes the Perceptron model with zero weights and bias.
@@ -78,10 +80,10 @@ class Perceptron():
     def predict(self, inputs: List[float]) -> int:
         """
         Predicts the class of a data point.
-        
+
         Args:
         - inputs: A list representing the data point.
-        
+
         Returns:
         - 1 if the point is above the target function, -1 otherwise..
         """
@@ -91,11 +93,11 @@ class Perceptron():
     def train(self, inputs: List[Tuple[float]], outputs: List[int]) -> int:
         """
         Trains the Perceptron model on a set of labeled data points using the perceptron learning algorithm.
-        
+
         Args:
         - inputs: A list of tuples representing the features of each data point.
         - outputs: A list of integers representing the labels of each data point.
-        
+
         Returns:
         - The number of iterations needed to converge.
         """
@@ -183,10 +185,11 @@ class Perceptron():
         return self.__bias
 
 
-class Experiment(): 
+class Experiment():
     """
     A class representing an experiment that generates random points and trains a perceptron to classify them.
     """
+
     def __init__(self, input_size: int, experiment_size: int = 1000, test_size: int = 1000):
         self.__input_size = input_size
         self.__experiment_size = experiment_size
@@ -196,36 +199,68 @@ class Experiment():
         self.__iterations = []
         self.__errors = []
 
+        self.__inputs = None
+        self.__outputs = None
+        self.__test_inputs = None
+        self.__test_outputs = None
+
     def start(self) -> None:
         for _ in range(self.__experiment_size):
             self.__initialize()
-            inputs = self.__generate_points(self.__input_size)
-            outputs = self.__classify_points(inputs)
-            n_iterations = self.perceptron.train(inputs, outputs)
+            self.__inputs = self.__generate_points(self.__input_size)
+            self.__outputs = self.__classify_points(self.__inputs)
+            n_iterations = self.perceptron.train(self.__inputs, self.__outputs)
 
-            test_inputs = self.__generate_points(self.__test_size)
-            test_outputs = self.__classify_points(test_inputs)
-            accuracy = self.perceptron.test(test_inputs, test_outputs)
+            self.__test_inputs = self.__generate_points(self.__test_size)
+            self.__test_outputs = self.__classify_points(self.__test_inputs)
+            accuracy = self.perceptron.test(
+                self.__test_inputs, self.__test_outputs
+            )
 
             self.__errors.append(accuracy)
             self.__iterations.append(n_iterations)
 
     def plot(self) -> None:
-        print(
-            f"Mean iteration: {self.mean_iterations}, Mean error {self.mean_error}"
-        )
-        print("Ploting Graph: ") 
+        intercept = -self.perceptron.bias/self.perceptron.weights[1]
+        slope = -self.perceptron.weights[0]/self.perceptron.weights[1]
+
+        x = self.__linespace(-1, 1, n=1000)
+        y_pred = list(map(lambda x: slope * x + intercept, x))
+        y = list(map(lambda x: self.target_function.m *
+                 x + self.target_function.b, x))
+
+        plt.plot(x, y, 'k--', label="f(x)")
+        plt.plot(x, y_pred, 'b--', label="g(x)")
+        plt.fill_between(x, 1, y_pred, color='green', alpha=0.05)
+        plt.fill_between(x, y_pred, -1, color='red', alpha=0.05)
+
+        x = [x[0] for x in self.__inputs]
+        y = [x[1] for x in self.__inputs]
+        c = ['g' if y == 1 else 'r' for y in self.__outputs]
+        plt.scatter(x, y, c=c, marker="o", label="Train")
+
+        x = [x[0] for x in self.__test_inputs]
+        y_pred = [x[1] for x in self.__test_inputs]
+        c = ['g' if y_pred == 1 else 'r' for y_pred in self.__test_outputs]
+        plt.scatter(x, y_pred, c=c, marker="x", label="Test")
+
+        plt.xlim((-1, 1))
+        plt.ylim((-1, 1))
+        plt.legend()
 
     def __initialize(self) -> None:
-            p, q = self.__generate_points(2)
-            self.__target_function = TargetFunction(p, q)
-            self.__perceptron = Perceptron()
+        p, q = self.__generate_points(2)
+        self.__target_function = TargetFunction(p, q)
+        self.__perceptron = Perceptron()
 
     def __generate_points(self, size: int = 10) -> List[Tuple[float]]:
         return [(random.uniform(-1, 1), random.uniform(-1, 1)) for _ in range(size)]
 
     def __classify_points(self, inputs: List[Tuple[float]]) -> List[float]:
         return [self.target_function.classify(i) for i in inputs]
+
+    def __linespace(self, lower: float, upper: float, n: int = 100) -> List[float]:
+        return [lower + x*(upper - lower)/n for x in range(n)]
 
     @property
     def perceptron(self) -> Perceptron:
@@ -245,13 +280,19 @@ class Experiment():
 
 
 def run_experiments():
-    experiment = Experiment(input_size=10)
+    experiment = Experiment(input_size=100)
     experiment.start()
     experiment.plot()
+    plt.savefig("N10.png")
+    # plt.show()
+    plt.clf()
 
     experiment = Experiment(input_size=100)
     experiment.start()
     experiment.plot()
+    plt.savefig("N100.png")
+    # plt.show()
+    plt.clf()
 
 
 if __name__ == "__main__":
