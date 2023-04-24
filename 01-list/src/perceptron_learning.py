@@ -280,10 +280,14 @@ class Experiment():
 
 
 def run_experiments():
-    experiment = Experiment(input_size=100)
+    experiment = Experiment(input_size=10)
     experiment.start()
     experiment.plot()
     plt.savefig("N10.png")
+    print(
+        f"Approx P(f(x)≠g(x)): {experiment.mean_error},\
+        \nMean iterations: {experiment.mean_iterations}"
+    )
     # plt.show()
     plt.clf()
 
@@ -291,6 +295,10 @@ def run_experiments():
     experiment.start()
     experiment.plot()
     plt.savefig("N100.png")
+    print(
+        f"Approx P(f(x)≠g(x)): {experiment.mean_error},\
+        \nMean iterations: {experiment.mean_iterations}"
+    )
     # plt.show()
     plt.clf()
 
