@@ -5,6 +5,8 @@ from typing import Tuple, List
 
 import matplotlib.pyplot as plt
 
+from linear_model import LinearModel
+
 
 class TargetFunction():
     """
@@ -101,6 +103,10 @@ class Perceptron():
         Returns:
         - The number of iterations needed to converge.
         """
+        linear_model = LinearModel()
+        linear_model.train(inputs, outputs)
+        self.__bias = linear_model.weights[0]
+        self.__weights = linear_model.weights[1:]
         predictions = [self.predict(i) for i in inputs]
         missclassified_points = self.__missclassified_points(
             inputs, outputs, predictions
@@ -282,25 +288,15 @@ class Experiment():
 def run_experiments():
     experiment = Experiment(input_size=10)
     experiment.start()
-    experiment.plot()
-    plt.savefig("N10.png")
+    # experiment.plot()
+    # plt.savefig("N10.png")
     print(
         f"Approx P(f(x)≠g(x)): {experiment.mean_error},\
         \nMean iterations: {experiment.mean_iterations}"
+        
     )
     # plt.show()
-    plt.clf()
-
-    experiment = Experiment(input_size=100)
-    experiment.start()
-    experiment.plot()
-    plt.savefig("N100.png")
-    print(
-        f"Approx P(f(x)≠g(x)): {experiment.mean_error},\
-        \nMean iterations: {experiment.mean_iterations}"
-    )
-    # plt.show()
-    plt.clf()
+    # plt.clf()
 
 
 if __name__ == "__main__":

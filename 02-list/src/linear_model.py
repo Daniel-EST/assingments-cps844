@@ -187,7 +187,7 @@ class Experiment():
     def plot(self) -> None:
         intercept = -self.linear_model.weights[0]/self.linear_model.weights[2]
         slope = -self.linear_model.weights[1]/self.linear_model.weights[2]
-        
+
         x = self.__linespace(-1, 1, n=1000)
         y_pred = list(map(lambda x: slope * x + intercept, x))
         y = list(map(lambda x: self.target_function.m *
@@ -203,10 +203,10 @@ class Experiment():
         c = ['g' if y == 1 else 'r' for y in self.__outputs]
         plt.scatter(x, y, c=c, marker="o", label="Train")
 
-        # x = [x[0] for x in self.__test_inputs]
-        # y_pred = [x[1] for x in self.__test_inputs]
-        # c = ['g' if y_pred == 1 else 'r' for y_pred in self.__test_outputs]
-        # plt.scatter(x, y_pred, c=c, marker="x", label="Test")
+        x = [x[0] for x in self.__test_inputs]
+        y_pred = [x[1] for x in self.__test_inputs]
+        c = ['g' if y_pred == 1 else 'r' for y_pred in self.__test_outputs]
+        plt.scatter(x, y_pred, c=c, marker="x", label="Test")
 
         plt.xlim((-1, 1))
         plt.ylim((-1, 1))
