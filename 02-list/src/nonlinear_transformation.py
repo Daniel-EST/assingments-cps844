@@ -201,22 +201,12 @@ class Experiment():
 
 
 def run_experiments():
-    experiment = Experiment(input_size=100)
-    experiment.start()
-    experiment.plot()
-    plt.savefig("N100.png")
-    print(
-        f"Approx P(f(x)≠g(x)) (in sample): {experiment.mean_in_sample_error}"
-    )
-    # plt.show()
-    plt.clf()
-
     experiment = Experiment(input_size=1000)
     experiment.start()
     experiment.plot()
-    plt.savefig("N1000.png")
+    # plt.savefig("N1000.png")
     print(
-        f"Approx P(f(x)≠g(x)) (out of sample): {experiment.mean_out_of_sample_error}"
+        f"Approx P(f(x)≠g(x)) (in sample): {experiment.mean_in_sample_error}"
     )
     # plt.show()
     plt.clf()

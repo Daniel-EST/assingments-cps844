@@ -362,64 +362,38 @@ class Experiment():
 
 def run_experiments():
     experiment = Experiment(
-        input_size=10, max_iterations=10, experiment_size=1)
-    experiment.start()
-    experiment.plot()
-    plt.savefig("N10.png")
-    print(
-        f"Approx P(f(x)≠g(x)): {experiment.mean_error}"
-    )
-    plt.show()
-    plt.clf()
-
-    plt.plot(list(range(len(experiment.pocket_errors))),
-             experiment.pocket_errors, 'k--', label="f(x)")
-    plt.show()
-
-    experiment = Experiment(
         input_size=100, max_iterations=10, experiment_size=1)
     experiment.start()
     experiment.plot()
-    plt.savefig("N10.png")
+    plt.savefig("N100_10.png")
     print(
         f"Approx P(f(x)≠g(x)): {experiment.mean_error}"
     )
-    plt.show()
+    # plt.show()
     plt.clf()
 
     plt.plot(list(range(len(experiment.pocket_errors))),
              experiment.pocket_errors, 'k--', label="f(x)")
-    plt.show()
-
-    experiment = Experiment(
-        input_size=10, max_iterations=50, experiment_size=1)
-    experiment.start()
-    experiment.plot()
-    plt.savefig("N10.png")
-    print(
-        f"Approx P(f(x)≠g(x)): {experiment.mean_error}"
-    )
-    plt.show()
+    plt.savefig("N100_10_steps.png")
+    # plt.show()
     plt.clf()
-
-    plt.plot(list(range(len(experiment.pocket_errors))),
-             experiment.pocket_errors, 'k--', label="f(x)")
-    plt.show()
 
     experiment = Experiment(
         input_size=100, max_iterations=50, experiment_size=1)
     experiment.start()
     experiment.plot()
-    plt.savefig("N10.png")
+    plt.savefig("N100_50.png")
     print(
         f"Approx P(f(x)≠g(x)): {experiment.mean_error}"
     )
-    plt.show()
+    # plt.show()
     plt.clf()
 
     plt.plot(list(range(len(experiment.pocket_errors))),
              experiment.pocket_errors, 'k--', label="f(x)")
-    plt.show()
+    plt.savefig("N100_50_steps.png")
+    # plt.show()
+    plt.clf()
 
 
 if __name__ == "__main__":

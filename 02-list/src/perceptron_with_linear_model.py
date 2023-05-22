@@ -292,8 +292,7 @@ def run_experiments():
     # plt.savefig("N10.png")
     print(
         f"Approx P(f(x)≠g(x)): {experiment.mean_error},\
-        \nMean iterations: {experiment.mean_iterations}"
-        
+        \nMean iterations: {experiment.mean_iterations}"   
     )
     # plt.show()
     # plt.clf()
